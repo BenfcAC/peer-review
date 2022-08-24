@@ -1,0 +1,37 @@
+name: Build App
+
+on:
+  pull_request:
+    branches:
+      - "main"
+  push:
+    branches:
+      - "main"
+
+jobs:
+  build-app:
+    name: Build App
+
+    env:
+      NODE_VERSION: "16.x"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout GitHub Action"
+        uses: actions/checkout@master
+        
+      - name: Setup Node ${{ env.NODE_VERSION }} Environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: "Resolve Project Dependencies"
+        run: |
+          npm install --ignore-scripts
+        working-directory: ./
+
+      - name: "Build and Unit Tests"
+        run: |
+          npm run build
+          npm run test
+        working-directory: ./
