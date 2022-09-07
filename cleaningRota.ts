@@ -13,7 +13,7 @@ export const cleaningDays: Day[] = [
     'Tuesday',
     'Wednesday',
     'Thursday',
-    'Fripay',
+    'Friday',
     'Saturday',
 ]
 
