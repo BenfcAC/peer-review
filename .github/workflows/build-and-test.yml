@@ -33,5 +33,5 @@ jobs:
       - name: "Build and Unit Tests"
         run: |
           npm run build
-          npm run test
+          npm run test:local
         working-directory: ./
