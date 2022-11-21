@@ -1,22 +1,18 @@
 /**
- * store unit tests
+ * get product integration tests
  *
  * @group integration
  */
 
 import { VAT_RATE } from '../../src/store';
 import * as storeUtilities from '../../src/services/storeUtilities';
-import { Product, Store } from '../../src/types';
+import { Store } from '../../src/types';
 import { getStore } from '../../src/api/api';
 import { addProduct } from '../../src/services/addProduct';
+import { aProduct } from '../testData/product';
 
 const spyHasProduct = jest.spyOn(storeUtilities, 'hasProduct');
 const spyCalculateVat = jest.spyOn(storeUtilities, 'calculateVat');
-
-const aProduct: Product = {
-    price: 10,
-    sku: '12-3',
-};
 
 const testStore: Store = { inventory: {}, openingTimes: [] };
 
@@ -27,16 +23,25 @@ mockGetStore.mockResolvedValue(testStore);
 describe('add product', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        testStore.inventory = {};
     });
     it('should check product exists and return false', async () => {
-        await addProduct(aProduct);
-
-        const expectedInventory = {
-            '12-3': { product: aProduct, stock: 1 },
-        };
+        await addProduct(aProduct());
 
         expect(spyHasProduct).toReturnWith(false);
-        expect(spyCalculateVat).toReturnWith(aProduct.price * VAT_RATE);
+    });
+
+    it('should calculate the VAT of the product', async () => {
+        await addProduct(aProduct());
+
+        expect(spyCalculateVat).toReturnWith(aProduct().price * VAT_RATE);
+    });
+
+    it('should add a product to the store inventory', async () => {
+        await addProduct(aProduct());
+
+        const expectedInventory = { [aProduct().sku]: { product: { ...aProduct(), vat: 2 }, stock: 1 } };
+
         expect(testStore.inventory).toEqual(expectedInventory);
     });
 });
