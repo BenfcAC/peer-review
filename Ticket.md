@@ -10,5 +10,5 @@ We need the returned product to include the original price, sale price and disco
 
 -   Product type updated to include `onSale`
 -   Product type updated to include field `discount` required when `onSale` is true
--   Products are returned with their sale price
--   Products are returned with their discounted value in pounds
+-   On sale Products are returned with their sale price
+-   On sale Products are returned with their discounted value in pounds
