@@ -10,6 +10,7 @@ import { Product } from '../../src/types';
 const aProduct: Product = {
     price: 10,
     sku: '12-3',
+    onSale: false,
 };
 
 describe('store', () => {

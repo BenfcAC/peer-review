@@ -4,11 +4,11 @@
  * @group unit
  */
 
-import { Store } from '../../../src/types';
+import { SaleProduct, Store } from '../../../src/types';
 import { getStore } from '../../../src/api/api';
 import { checkStock } from '../../../src/services/storeUtilities';
 import { getProduct } from '../../../src/services/getProduct';
-import { aProduct } from '../../testData/product';
+import { aProduct, aSaleProduct } from '../../testData/product';
 
 jest.mock('../../../src/services/storeUtilities');
 const mockCheckStock = checkStock as jest.MockedFunction<typeof checkStock>;
@@ -33,5 +33,28 @@ describe('get product', () => {
 
         expect(mockCheckStock).toBeCalledWith(testStore.inventory, aProduct().sku, 1);
         expect(response).toEqual(expectedProduct);
+    });
+
+    describe('sale product', () => {
+        beforeEach(() => {
+            mockCheckStock.mockImplementationOnce(() => true);
+            testStore.inventory = { '12-3': { product: aSaleProduct(), stock: 1 } };
+            mockGetStore.mockResolvedValueOnce(testStore);
+        });
+
+        // it.todo('Product type updated to include onSale');
+        // it.todo('Product type updated to include field discount required when onSale is true');
+
+        it('should return a product with a sale price', async () => {
+            const response = (await getProduct(aSaleProduct().sku)) as SaleProduct;
+
+            expect(response.salePrice).toEqual(2);
+        });
+
+        it('should return a product with a saving', async () => {
+            const response = (await getProduct(aSaleProduct().sku)) as SaleProduct;
+
+            expect(response.saving).toEqual(8);
+        });
     });
 });
